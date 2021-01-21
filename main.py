@@ -19,7 +19,7 @@ lastfm_key = os.getenv("LASTFM_KEY")
 lastfm_username = os.getenv("LASTFM_USERNAME")
 
 # Time between updating status (in secs)
-refresh_delay = int(os.getenv("REFRESH_DELAY")) or 20
+refresh_delay = int(os.getenv("REFRESH_DELAY")) if os.getenv("REFRESH_DELAY") else 20
 
 # "true" or ""
 debug = os.getenv("DEBUG") or ""
