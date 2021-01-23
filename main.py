@@ -28,10 +28,10 @@ use_proxies = os.getenv("USE_PROXIES") or "true"
 
 
 if not _fp_available:
-    if use_proxies:
+    if use_proxies == "true":
         print("If you want to use proxies, please install 'free-proxy' package:")
         print("  $ pip install free-proxy\n")
-        use_proxies = ""
+        use_proxies = "false"
 
 
 def main():
