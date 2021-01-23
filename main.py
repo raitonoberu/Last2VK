@@ -67,6 +67,8 @@ def main():
                         print("Not found")
                     continue
             vk.set_status(result)
+            if debug == "true":
+                print("OK")
         except Exception as e:
             if debug == "true":
                 raise
@@ -101,17 +103,16 @@ class VkApi(object):
             if proxy is None:
                 proxy = {}
             else:
-                proxy = {"http": proxy}
+                proxy = {"http": proxy, "https": proxy}
         else:
             proxy = {}
 
         try:
             return self.session.get(url, params=params, proxies=proxy)
-        except:  # TODO: catch only proxy-related exceptions
+        except requests.exceptions.ProxyError:
             if use_proxies == "true":
                 self.proxifier.update_proxy()
                 return self._get(url, params)
-            raise
 
     def search(self, q):
         params = {
@@ -136,7 +137,6 @@ class VkApi(object):
             "v": "5.100",
         }
         self._get("https://api.vk.com/method/audio.setBroadcast", params=params)
-
 
 class LastFmException(Exception):
     def __init__(self, code, message):
