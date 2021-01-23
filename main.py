@@ -21,8 +21,8 @@ lastfm_username = os.getenv("LASTFM_USERNAME")
 # Time between updating status (in secs)
 refresh_delay = int(os.getenv("REFRESH_DELAY")) if os.getenv("REFRESH_DELAY") else 20
 
-# "true" or ""
-debug = os.getenv("DEBUG") or ""
+# "true" or "false"
+debug = os.getenv("DEBUG") or "false"
 retry_without_artist = os.getenv("RETRY_WITHOUT_ARTIST") or "true"
 use_proxies = os.getenv("USE_PROXIES") or "true"
 
@@ -37,7 +37,7 @@ if not _fp_available:
 def main():
     session = requests.session()
     lastfm = LastFmApi(session, lastfm_key, lastfm_username)
-    vk = VkApi(session, vk_token, use_proxies)
+    vk = VkApi(session, vk_token)
 
     while True:
         sleep(refresh_delay)
@@ -53,22 +53,22 @@ def main():
             if track is None:
                 continue
             track_name = track[0] + " " + track[1]
-            if debug:
+            if debug == "true":
                 print(track_name)
             result = vk.search(track_name)
             if result is None:
-                if not retry_without_artist:
-                    if debug:
+                if retry_without_artist != "true":
+                    if debug == "true":
                         print("Not found")
                     continue
                 result = vk.search(track[1])
                 if result is None:
-                    if debug:
+                    if debug == "true":
                         print("Not found")
                     continue
             vk.set_status(result)
         except Exception as e:
-            if debug:
+            if debug == "true":
                 raise
             print(e)
             lastfm.now_playing = None
@@ -84,20 +84,19 @@ class Proxifier(object):
 
     def update_proxy(self):
         self.proxy = FreeProxy(country_id=["RU"]).get()
-        if debug:
+        if debug == "true":
             print("[DEBUG] New proxy:", self.proxy)
 
 
 class VkApi(object):
-    def __init__(self, session, token, use_proxies):
+    def __init__(self, session, token):
         self.session = session
         self.token = token
-        self.use_proxies = use_proxies
-        if use_proxies:
+        if use_proxies == "true":
             self.proxifier = Proxifier()
 
     def _get(self, url, params={}):
-        if self.use_proxies:
+        if use_proxies == "true":
             proxy = self.proxifier.get_proxy()
             if proxy is None:
                 proxy = {}
@@ -109,7 +108,7 @@ class VkApi(object):
         try:
             return self.session.get(url, params=params, proxies=proxy)
         except:  # TODO: catch only proxy-related exceptions
-            if self.use_proxies:
+            if use_proxies == "true":
                 self.proxifier.update_proxy()
                 return self._get(url, params)
             raise
