@@ -1,6 +1,8 @@
 # Last2VK
 Last.fm "Now Playing" broadcast to VK status message. Inspired by [P2LOVE](https://github.com/P2LOVE)'s [Spoti2VK](https://github.com/P2LOVE/Spoti2VK). Ready for Heroku.
 
+**IMPORTANT!** Currently, the project does not work correctly on non-Russian servers. More than half of the songs will not be broadcast in the status, and proxies will not help. I'm trying my best to solve this problem.
+
 ## About
 Initially, I wanted to broadcast my "Now Playing" status from Spotify to VK, but I found out that the Spotify API is absolutely not suitable for such purposes and requires Oauth. Then I decided to use Last.fm, it has a convenient API and only requires an API key.
 
@@ -34,7 +36,7 @@ Whether to retry the search if the full name is not found, using only the track 
 ### USE_PROXIES
 **"true" or "false"**
 
-Whether to use Russian proxies. The search will not work properly if the machine has a non-Russian IP address (including Heroku), proxies can help. Default: "true".
+Whether to use Russian proxies. The search will not work properly if the machine has a non-Russian IP address (including Heroku), proxies can help **(but they really don't)**. Default: "true".
 
 ## Dependencies
 - [requests](https://github.com/psf/requests)
